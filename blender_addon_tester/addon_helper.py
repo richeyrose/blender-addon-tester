@@ -14,6 +14,10 @@ def clean_file(filename):
     :param filename     Path to addon file
     :return None
     """
+    _, ext = os.path.splitext(filename)
+    if ext != '.py':
+        return None
+    
     f = open(filename, "r")
     lines = f.readlines()
     f.close()
