@@ -17,7 +17,7 @@ def clean_file(filename):
     _, ext = os.path.splitext(filename)
     if ext != '.py':
         return None
-    
+
     f = open(filename, "r")
     lines = f.readlines()
     f.close()
@@ -80,7 +80,7 @@ def zip_addon(addon: str, addon_dir: str):
 
     # Delete target addon dir if exists
     if os.path.isdir(addon_dir):
-        shutil.rmtree(addon_dir)
+        shutil.rmtree(addon_dir, ignore_errors=True)
     os.mkdir(addon_dir)
 
     print(f"Addon dir is - {os.path.realpath(addon_dir)}")
@@ -104,9 +104,9 @@ def zip_addon(addon: str, addon_dir: str):
 
             # Clean temp dir if already exists
             if temp_dir.is_dir():
-                shutil.rmtree(temp_dir)
+                shutil.rmtree(temp_dir, ignore_errors=True)
 
-            # Creating the addon under the temp dir with its hierarchy 
+            # Creating the addon under the temp dir with its hierarchy
             shutil.copytree(addon_path, temp_dir.joinpath(addon_path.relative_to(addon_path.anchor)))
 
             # Move to temp dir
@@ -114,7 +114,7 @@ def zip_addon(addon: str, addon_dir: str):
 
             # Clear python cache
             if os.path.isdir("__pycache__"):
-                shutil.rmtree("__pycache__")
+                shutil.rmtree("__pycache__", ignore_errors=True)
 
             # Write addon content into archive
             for dirname, subdirs, files in os.walk(addon_path):
@@ -131,7 +131,7 @@ def zip_addon(addon: str, addon_dir: str):
             os.chdir(cwd)
 
             # Remove temp dir
-            shutil.rmtree(temp_dir)
+            shutil.rmtree(temp_dir, ignore_errors=True)
         else:  # Addon is a file, zip only the file
             # Clean file
             #y = addon_path.as_posix()
@@ -170,7 +170,7 @@ def change_addon_dir(bpy_module: str, addon_dir: str):
     # Create addon target dir if doesn't exist
     if not addon_dir.is_dir():
         addon_dir.mkdir(parents=True)
-    
+
     print(f"Change addon dir - {addon_dir}")
     bpy.context.preferences.filepaths.script_directory = addon_dir.as_posix()
     bpy.utils.refresh_script_paths()
@@ -191,7 +191,7 @@ def cleanup(addon, bpy_module, addon_dir):
     print(f"Cleaning up - {bpy_module}")
     bpy.ops.preferences.addon_disable(module=bpy_module)
     if os.path.isdir(addon_dir):
-        shutil.rmtree(addon_dir)
+        shutil.rmtree(addon_dir, ignore_errors=True)
 
 
 def get_version(bpy_module):
